@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'prompt_generator',
     'rest_framework',
-    'drf_yasg'
+    'drf_yasg',
+    'paper_lists_retrive',
+    'llm_endpoint'
 ]
 
 MIDDLEWARE = [
