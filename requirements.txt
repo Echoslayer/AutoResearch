@@ -1,0 +1,7 @@
+django==5.1
+torch
+tiktoken
+tqdm
+djangorestframework
+drf-yasg==1.21.5
+numpy
