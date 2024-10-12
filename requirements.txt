@@ -5,3 +5,8 @@ tqdm
 djangorestframework
 drf-yasg==1.21.5
 numpy
+sentence_transformers
+supabase
+python-dotenv
+psycopg2-binary
+gunicorn
