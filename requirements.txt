@@ -10,3 +10,5 @@ supabase
 python-dotenv
 psycopg2-binary
 gunicorn
+openai
+einops

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'paper_lists_retrive',
-    'llm_endpoint'
+    'llm_endpoint',
+    'content_agent'
 ]
 
 MIDDLEWARE = [

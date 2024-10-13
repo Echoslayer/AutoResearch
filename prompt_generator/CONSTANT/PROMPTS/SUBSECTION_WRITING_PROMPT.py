@@ -44,44 +44,6 @@
 # Only return the content more than [WORD NUM] words you write for the subsection [SUBSECTION NAME] without any other information:
 # '''
 
-# SUBSECTION_WRITING_PROMPT = """
-# You are an expert in artificial intelligence writing a comprehensive survey about [TOPIC].
-
-# Overall outline:
-# [OVERALL OUTLINE]
-
-# Reference papers:
-# [PAPER LIST]
-
-# Task: Write content for the subsection "[SUBSECTION NAME]" under the section "[SECTION NAME]".
-
-# Subsection description:
-# [DESCRIPTION]
-
-# Instructions:
-# 1. Write more than [WORD NUM] words for this subsection.
-# 2. Cite papers using the following format: [paper_title]. Example: "Recent advancements in natural language processing [GPT-3: Language Models are Few-Shot Learners]"
-# 3. Only cite papers from the provided list above.
-# 4. Cite papers only when they directly support your claims or provide specific data/concepts.
-# 5. Follow these citation guidelines:
-#    a. Cite when summarizing existing literature.
-#    b. Cite when discussing specific theories, models, or data.
-#    c. Cite when comparing or contrasting findings.
-#    d. Cite when highlighting research gaps.
-#    e. Cite when using established methods.
-#    f. Cite when supporting arguments.
-#    g. Cite when suggesting future research directions.
-# 6. Structure your content logically, using paragraphs to separate ideas.
-# 7. Ensure your writing is clear, concise, and academic in tone.
-
-# Output format:
-# ---BEGIN SUBSECTION CONTENT---
-# [Your subsection content here, following all the instructions above]
-# ---END SUBSECTION CONTENT---
-
-# Important: Strictly adhere to the format above. Do not include any text before or after the delimiters. Ensure your content is more than [WORD NUM] words and follows all citation guidelines.
-# """
-
 SUBSECTION_WRITING_PROMPT = """
 You are an expert in artificial intelligence writing a comprehensive survey about [TOPIC].
 
@@ -111,6 +73,7 @@ Instructions:
    g. Cite when suggesting future research directions.
 6. Structure your content logically, using paragraphs to separate ideas.
 7. Ensure your writing is clear, concise, and academic in tone.
+8. Embed citations naturally within the content.
 
 Output the content in the following JSON format:
 
@@ -118,7 +81,6 @@ Output the content in the following JSON format:
   "subsection_name": "[SUBSECTION NAME]",
   "section_name": "[SECTION NAME]",
   "content": "Your subsection content here, following all the instructions above. Ensure this content is more than [WORD NUM] words and follows all citation guidelines.",
-  "word_count": 0,
   "citations": [
     {"paper_title": "Title of Paper 1", "count": 0},
     {"paper_title": "Title of Paper 2", "count": 0}
@@ -128,8 +90,8 @@ Output the content in the following JSON format:
 Important: 
 1. The JSON should be valid and properly formatted.
 2. Replace the placeholder text in the "content" field with your actual subsection content.
-3. Update the "word_count" field with the actual word count of your content.
-4. In the "citations" array, include only the papers you've cited, with their correct titles and citation counts.
-5. Ensure your content is more than [WORD NUM] words and follows all citation guidelines.
-6. Do not include any text or explanation outside of this JSON structure.
+3. In the "citations" array, include only the papers you've cited, with their correct titles and citation counts.
+4. Ensure your content is more than [WORD NUM] words and follows all citation guidelines.
+5. Do not include any text or explanation outside of this JSON structure.
+6. Do not include explicit "References", "Citations" or "Word count" sections at the end of the content.
 """

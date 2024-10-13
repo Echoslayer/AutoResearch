@@ -1,6 +1,11 @@
 # Environment variables
 .env
 .env.local
+outline_results/
+uploads
+outline_results
+content_results
+
 
 # Django
 *.log

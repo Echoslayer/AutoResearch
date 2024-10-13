@@ -31,5 +31,11 @@ Remember that you can only cite the 'paper_title' provided above!!!
 Any other informations like authors are not allowed cited!!!
 Do not change any other things except the citations!!!
 </instruction>
-Only return the subsection with correct citations:
+
+Important: 
+1. Only return the subsection with correct citations.
+2. Do not include explicit "Citations" or "Word count" sections at the end of the content.
+3. The citation in the content should be paper_title, does use number.
+4. Do not include sentence like "Here's the rewritten subsection with correct citations:" in the beginning, just start the content directly. Also same in the end of the content. 
+5. Do not use asterisks in the content. 
 '''
