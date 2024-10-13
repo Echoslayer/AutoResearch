@@ -16,7 +16,8 @@ AutoResearch is an AI-powered system designed to assist in the generation and st
 
 - Django
 - Django REST Framework
-- OpenAI API
+- Supabase
+- Ollama
 - Langchain
 - drf-yasg (for API documentation)
 
@@ -40,9 +41,15 @@ AutoResearch is an AI-powered system designed to assist in the generation and st
    ```
 
 4. Set up environment variables:
-   Create a `.env` file in the root directory and add your OpenAI API key:
+   Create a `.env.local` file in the root directory and add the necessary environment variables:
    ```
-   OPENAI_API_KEY=your_api_key_here
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_KEY=your_supabase_key
+   DATASET_PATH=path_to_your_dataset
+   OLLAMA_URL=your_ollama_url
+   OLLAMA_MODEL=your_ollama_model
+   DOCUMENTS_TABLE_NAME=your_documents_table_name
+   NUM_SEC=number_of_sections
    ```
 
 5. Run migrations:
