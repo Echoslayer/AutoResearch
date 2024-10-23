@@ -5,13 +5,18 @@ from .services.outline_agent_service import OutlineWriter
 import json
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+outline_writer = OutlineWriter()
 
 @swagger_auto_schema(
     method='post',
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'topic': openapi.Schema(type=openapi.TYPE_STRING, description='The topic to search for'),
+            'topic': openapi.Schema(type=openapi.TYPE_STRING, description='Topic'),
             'match_count': openapi.Schema(type=openapi.TYPE_INTEGER, description='Number of papers to retrieve', default=1500),
         },
         required=['topic']
@@ -24,17 +29,18 @@ from drf_yasg import openapi
     ))}
 )
 @csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST'])
 def retrieve_papers(request):
     """Step 1: Retrieve papers"""
-    data = json.loads(request.body)
+    data = request.data
     topic = data.get('topic')
     match_count = data.get('match_count', 1500)
     
-    outline_writer = OutlineWriter()
-    search_results = outline_writer._retrieve_papers(topic, match_count)
-    
-    return JsonResponse({'papers': search_results})
+    try:
+        search_results = outline_writer._retrieve_papers(topic, match_count)
+        return Response({'papers': search_results}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @swagger_auto_schema(
     method='post',
@@ -56,18 +62,19 @@ def retrieve_papers(request):
     ))}
 )
 @csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST'])
 def chunk_papers(request):
     """Step 2: Chunk papers"""
-    data = json.loads(request.body)
+    data = request.data
     papers = data.get('papers', [])
     titles = data.get('titles', [])
     max_paper_chunks = data.get('max_paper_chunks')
     
-    outline_writer = OutlineWriter()
-    papers_chunks, titles_chunks = outline_writer._chunk_papers_and_titles(papers, titles, max_chunks=max_paper_chunks)
-    
-    return JsonResponse({'papers_chunks': papers_chunks, 'titles_chunks': titles_chunks})
+    try:
+        papers_chunks, titles_chunks = outline_writer._chunk_papers_and_titles(papers, titles, max_chunks=max_paper_chunks)
+        return Response({'papers_chunks': papers_chunks, 'titles_chunks': titles_chunks}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @swagger_auto_schema(
     method='post',
@@ -90,20 +97,21 @@ def chunk_papers(request):
     ))}
 )
 @csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST'])
 def generate_rough_outlines(request):
     """Step 3: Generate rough outlines"""
-    data = json.loads(request.body)
+    data = request.data
     topic = data.get('topic')
     papers_chunks = data.get('papers_chunks', [])
     titles_chunks = data.get('titles_chunks', [])
     section_num = data.get('section_num', 8)
     result_folder = data.get('result_folder', '')
     
-    outline_writer = OutlineWriter()
-    rough_outlines = outline_writer._generate_rough_outlines(topic, papers_chunks, titles_chunks, section_num, result_folder)
-    
-    return JsonResponse({'rough_outlines': rough_outlines})
+    try:
+        rough_outlines = outline_writer._generate_rough_outlines(topic, papers_chunks, titles_chunks, section_num, result_folder)
+        return Response({'rough_outlines': rough_outlines}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @swagger_auto_schema(
     method='post',
@@ -125,19 +133,20 @@ def generate_rough_outlines(request):
     ))}
 )
 @csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST'])
 def merge_outlines(request):
     """Step 4: Merge outlines"""
-    data = json.loads(request.body)
+    data = request.data
     topic = data.get('topic')
     outlines = data.get('outlines', [])
     section_num = data.get('section_num', 8)
     result_folder = data.get('result_folder', '')
     
-    outline_writer = OutlineWriter()
-    merged_outline = outline_writer._merge_outlines(topic, outlines, section_num, result_folder)
-    
-    return JsonResponse({'merged_outline': merged_outline})
+    try:
+        merged_outline = outline_writer._merge_outlines(topic, outlines, section_num, result_folder)
+        return Response({'merged_outline': merged_outline}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @swagger_auto_schema(
     method='post',
@@ -159,19 +168,20 @@ def merge_outlines(request):
     ))}
 )
 @csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST'])
 def generate_subsection_outlines(request):
     """Step 5: Generate subsection outlines"""
-    data = json.loads(request.body)
+    data = request.data
     topic = data.get('topic')
     section_outline = data.get('section_outline', '')
     rag_num = data.get('rag_num', 10)
     result_folder = data.get('result_folder', '')
     
-    outline_writer = OutlineWriter()
-    sub_outlines = outline_writer._generate_subsection_outlines(topic, section_outline, rag_num, result_folder)
-    
-    return JsonResponse({'sub_outlines': sub_outlines})
+    try:
+        sub_outlines = outline_writer._generate_subsection_outlines(topic, section_outline, rag_num, result_folder)
+        return Response({'sub_outlines': sub_outlines}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @swagger_auto_schema(
     method='post',
@@ -191,17 +201,18 @@ def generate_subsection_outlines(request):
     ))}
 )
 @csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST'])
 def process_outlines(request):
     """Step 6: Process outlines"""
-    data = json.loads(request.body)
+    data = request.data
     section_outline = data.get('section_outline', '')
     sub_outlines = data.get('sub_outlines', [])
     
-    outline_writer = OutlineWriter()
-    processed_outline = outline_writer._process_outlines(section_outline, sub_outlines)
-    
-    return JsonResponse({'processed_outline': processed_outline})
+    try:
+        processed_outline = outline_writer._process_outlines(section_outline, sub_outlines)
+        return Response({'processed_outline': processed_outline}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @swagger_auto_schema(
     method='post',
@@ -221,14 +232,52 @@ def process_outlines(request):
     ))}
 )
 @csrf_exempt
-@require_http_methods(["POST"])
+@api_view(['POST'])
 def edit_final_outline(request):
     """Step 7: Edit final outline"""
-    data = json.loads(request.body)
+    data = request.data
     outline = data.get('outline', '')
     result_folder = data.get('result_folder', '')
     
-    outline_writer = OutlineWriter()
-    final_outline = outline_writer._edit_final_outline(outline, result_folder)
+    try:
+        final_outline = outline_writer._edit_final_outline(outline, result_folder)
+        return Response({'final_outline': final_outline}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    return JsonResponse({'final_outline': final_outline})
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'outline': openapi.Schema(type=openapi.TYPE_STRING),
+            'file_name': openapi.Schema(type=openapi.TYPE_STRING),
+            'result_folder': openapi.Schema(type=openapi.TYPE_STRING, default=''),
+        },
+        required=['outline', 'file_name']
+    ),
+    responses={200: openapi.Response('Successful response', openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'message': openapi.Schema(type=openapi.TYPE_STRING),
+            'file_path': openapi.Schema(type=openapi.TYPE_STRING),
+        }
+    ))}
+)
+@csrf_exempt
+@api_view(['POST'])
+def save_final_outline(request):
+    """Step 8: Save final outline"""
+    data = request.data
+    outline = data.get('outline', '')
+    file_name = data.get('file_name', '')
+    result_folder = data.get('result_folder', '')
+    
+    try:
+        file_path = outline_writer._save_final_outline(outline, file_name, result_folder)
+        return Response({
+            'message': 'Outline successfully saved',
+            'file_path': file_path
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
