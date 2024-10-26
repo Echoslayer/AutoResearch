@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from .services.outline_agent_service import OutlineWriter
+from .services.outline_agent_service import OutlineAgentService
 import json
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-outline_writer = OutlineWriter()
+outline_service = OutlineAgentService()
 
 @swagger_auto_schema(
     method='post',
@@ -37,7 +37,7 @@ def retrieve_papers(request):
     match_count = data.get('match_count', 1500)
     
     try:
-        search_results = outline_writer._retrieve_papers(topic, match_count)
+        search_results = outline_service._retrieve_papers(topic, match_count)
         return Response({'papers': search_results}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -71,7 +71,7 @@ def chunk_papers(request):
     max_paper_chunks = data.get('max_paper_chunks')
     
     try:
-        papers_chunks, titles_chunks = outline_writer._chunk_papers_and_titles(papers, titles, max_chunks=max_paper_chunks)
+        papers_chunks, titles_chunks = outline_service._chunk_papers_and_titles(papers, titles, max_chunks=max_paper_chunks)
         return Response({'papers_chunks': papers_chunks, 'titles_chunks': titles_chunks}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -108,7 +108,7 @@ def generate_rough_outlines(request):
     result_folder = data.get('result_folder', '')
     
     try:
-        rough_outlines = outline_writer._generate_rough_outlines(topic, papers_chunks, titles_chunks, section_num, result_folder)
+        rough_outlines = outline_service._generate_rough_outlines(topic, papers_chunks, titles_chunks, section_num, result_folder)
         return Response({'rough_outlines': rough_outlines}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -143,7 +143,7 @@ def merge_outlines(request):
     result_folder = data.get('result_folder', '')
     
     try:
-        merged_outline = outline_writer._merge_outlines(topic, outlines, section_num, result_folder)
+        merged_outline = outline_service._merge_outlines(topic, outlines, section_num, result_folder)
         return Response({'merged_outline': merged_outline}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -178,7 +178,7 @@ def generate_subsection_outlines(request):
     result_folder = data.get('result_folder', '')
     
     try:
-        sub_outlines = outline_writer._generate_subsection_outlines(topic, section_outline, rag_num, result_folder)
+        sub_outlines = outline_service._generate_subsection_outlines(topic, section_outline, rag_num, result_folder)
         return Response({'sub_outlines': sub_outlines}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -209,7 +209,7 @@ def process_outlines(request):
     sub_outlines = data.get('sub_outlines', [])
     
     try:
-        processed_outline = outline_writer._process_outlines(section_outline, sub_outlines)
+        processed_outline = outline_service._process_outlines(section_outline, sub_outlines)
         return Response({'processed_outline': processed_outline}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -240,7 +240,7 @@ def edit_final_outline(request):
     result_folder = data.get('result_folder', '')
     
     try:
-        final_outline = outline_writer._edit_final_outline(outline, result_folder)
+        final_outline = outline_service._edit_final_outline(outline, result_folder)
         return Response({'final_outline': final_outline}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -274,7 +274,7 @@ def save_final_outline(request):
     result_folder = data.get('result_folder', '')
     
     try:
-        file_path = outline_writer._save_final_outline(outline, file_name, result_folder)
+        file_path = outline_service._save_outline(result_folder, outline)
         return Response({
             'message': 'Outline successfully saved',
             'file_path': file_path
