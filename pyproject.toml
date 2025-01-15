@@ -1,0 +1,32 @@
+[project]
+name = "my_project"
+version = "0.1.0"
+description = "A sample project using uv"
+requires-python = "==3.10.*"
+
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+dependencies = [
+    "django==5.1",
+    "torch",
+    "tiktoken",
+    "tqdm",
+    "djangorestframework",
+    "drf-yasg==1.21.5",
+    "numpy",
+    "sentence_transformers",
+    "supabase",
+    "python-dotenv",
+    "psycopg2-binary",
+    "gunicorn",
+    "openai",
+    "einops"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["llm_endpoint", "outline_agent", "content_agent", "prompt_generator", "paper_lists_retrive", "autoresearch_backend"]
